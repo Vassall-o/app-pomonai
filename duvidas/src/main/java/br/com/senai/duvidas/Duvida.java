@@ -20,7 +20,10 @@ public class Duvida {
     @Column(columnDefinition = "TEXT")
     private String texto; 
 
-    @Column(name="dataHora")
+    @Column(columnDefinition = "TEXT")
+    private String resposta;
+
+    @Column(name="data_Hora")
     private LocalDateTime dataHora;
 
     public Duvida(){ }
@@ -40,7 +43,13 @@ public class Duvida {
     public void setTexto(String texto) {
         this.texto = texto;
     }
+    public String getResposta() {
+    return resposta;
+    }
 
+    public void setResposta(String resposta) {
+    this.resposta = resposta;
+    }
 
     
 }

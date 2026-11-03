@@ -10,6 +10,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable; 
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController 
 @RequestMapping("/duvida")
@@ -28,5 +33,39 @@ public class DuvidaController {
     public void cadastrar(@RequestBody DadosCadastroDuvida dados){
         repository.save(new Duvida(dados));
     }
+
+    // metodo cadastrar
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluir(@PathVariable Long id) {
+
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Dúvida não encontrada"
+            );
+        }
+
+        repository.deleteById(id);
+    }
+
+    // metodo que permite que o professor responda uma pergunta existente 
+    
+    @PutMapping("/{id}/resposta")
+    @Transactional
+    public void responder(
+            @PathVariable Long id,
+            @RequestBody DadosRespostaDuvida dados) {
+
+        Duvida duvida = repository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Dúvida não encontrada"
+            ));
+
+        duvida.setResposta(dados.resposta());
+        repository.save(duvida);
+    }
+
 }
 
